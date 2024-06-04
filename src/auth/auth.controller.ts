@@ -29,22 +29,20 @@ export class AuthController {
   @ApiExcludeEndpoint()
   @Post('reset-token')
   async resetToken(@Headers() headers) {
-    const token = headers.Authorization?.split(' ')[1];
-    console.log(token);
+    const token = headers.authorization?.split(' ')[1];
     if (!token) {
-      return {
-        data: '',
-        message: 'Token not provided',
-        status: HttpStatus.UNAUTHORIZED,
-        date: new Date(),
-      };
+      throw new HttpException('Token not provided', HttpStatus.BAD_REQUEST);
     }
 
     try {
       return await this.authService.resetToken(token);
     } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
       throw new HttpException(
-        'An error occurred while resetting token',
+        error.message || 'An error occurred while refreshing token',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

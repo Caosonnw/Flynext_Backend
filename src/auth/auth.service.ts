@@ -104,7 +104,7 @@ export class AuthService {
       const payload = { user_id: user.user_id, key };
 
       const accessToken = this.jwtService.sign(payload, {
-        expiresIn: '5m',
+        expiresIn: '5s',
         algorithm: 'HS256',
         secret: process.env.JWT_SECRET,
       });
@@ -143,69 +143,75 @@ export class AuthService {
     }
   }
 
+  async createToken(token: string) {
+    let decoded = await this.jwtService.decode(token);
+
+    const getUser = await this.prisma.users.findFirst({
+      where: { user_id: decoded.user_id },
+    });
+
+    if (!getUser) {
+      throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
+    }
+
+    const tokenRef = this.jwtService.decode(getUser.refresh_token);
+
+    if (!tokenRef || !tokenRef.key) {
+      throw new HttpException('Invalid token data', HttpStatus.UNAUTHORIZED);
+    }
+
+    const isValidRefreshToken = await this.jwtService.verifyAsync(
+      getUser.refresh_token,
+      {
+        secret: process.env.JWT_SECRET_REFRESH,
+      },
+    );
+
+    if (!isValidRefreshToken) {
+      throw new HttpException('Not Authorized', HttpStatus.UNAUTHORIZED);
+    }
+
+    // Create a new token
+    const payload = {
+      user_id: getUser.user_id,
+      key: tokenRef.key,
+    };
+
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn: '5s',
+      algorithm: 'HS256',
+      secret: process.env.JWT_SECRET,
+    });
+
+    return accessToken;
+  }
+
   async resetToken(token: string) {
-    console.log(token);
     try {
-      let decoded;
-      try {
-        decoded = await this.jwtService.verifyAsync(token, {
-          secret: process.env.JWT_SECRET,
-        });
-      } catch (error) {
-        if (error instanceof jwt.TokenExpiredError) {
-          throw new HttpException('TokenExpiredError', HttpStatus.UNAUTHORIZED);
-        } else {
-          throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
-        }
-      }
-
-      const getUser = await this.prisma.users.findFirst({
-        where: { user_id: decoded.user_id },
+      await this.jwtService.verifyAsync(token, {
+        secret: process.env.JWT_SECRET,
       });
 
-      if (!getUser) {
-        throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
-      }
+      const accessToken = await this.createToken(token);
 
-      const tokenRef = this.jwtService.decode(getUser.refresh_token);
-
-      if (!tokenRef || !tokenRef.key) {
-        throw new HttpException('Invalid token data', HttpStatus.UNAUTHORIZED);
-      }
-
-      const isValidRefreshToken = await this.jwtService.verifyAsync(
-        getUser.refresh_token,
-        {
-          secret: process.env.JWT_SECRET_REFRESH,
-        },
-      );
-
-      if (!isValidRefreshToken) {
-        throw new HttpException('Not Authorized', HttpStatus.UNAUTHORIZED);
-      }
-
-      // Create a new token
-      const tokenNew = this.jwtService.sign({
-        user_id: getUser.user_id,
-        key: tokenRef.key,
-      });
-      console.log(tokenNew);
       return {
-        data: tokenNew,
+        data: accessToken,
         message: 'Token refreshed',
         status: HttpStatus.OK,
         date: new Date(),
       };
     } catch (error) {
-      console.log(error);
-      if (error instanceof HttpException) {
-        throw error;
-      }
+      if (error.message === `invalid signature`)
+        throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
 
-      throw new HttpException(
-        error.message || 'An error occurred while refreshing token',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      const accessToken = await this.createToken(token);
+
+      return {
+        data: accessToken,
+        message: 'Token refreshed',
+        status: HttpStatus.OK,
+        date: new Date(),
+      };
     }
   }
 }
