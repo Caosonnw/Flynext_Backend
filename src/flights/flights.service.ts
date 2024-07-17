@@ -174,4 +174,39 @@ export class FlightsService {
       );
     }
   }
+
+  async getFlightById(id: number) {
+    const flight_id = parseInt(id.toString());
+    try {
+      const data = await this.prisma.flights.findFirst({
+        where: {
+          flight_id: flight_id,
+        },
+        include: {
+          airports_flights_departure_airport_idToairports: true,
+          airports_flights_arrival_airport_idToairports: true,
+        },
+      });
+      if (data) {
+        return {
+          data,
+          message: 'Get flight by ID successfully',
+          status: HttpStatus.OK,
+          date: new Date(),
+        };
+      } else {
+        throw new HttpException('No flight found', HttpStatus.NOT_FOUND);
+      }
+    } catch (error) {
+      console.log(error);
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      throw new HttpException(
+        error.message || 'An error occurred while processing your request',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

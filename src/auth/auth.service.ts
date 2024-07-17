@@ -104,7 +104,7 @@ export class AuthService {
       const payload = { user_id: user.user_id, key };
 
       const accessToken = this.jwtService.sign(payload, {
-        expiresIn: '5s',
+        expiresIn: '30s',
         algorithm: 'HS256',
         secret: process.env.JWT_SECRET,
       });
@@ -178,7 +178,7 @@ export class AuthService {
     };
 
     const accessToken = this.jwtService.sign(payload, {
-      expiresIn: '5s',
+      expiresIn: '30s',
       algorithm: 'HS256',
       secret: process.env.JWT_SECRET,
     });

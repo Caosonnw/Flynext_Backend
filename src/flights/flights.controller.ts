@@ -20,6 +20,11 @@ export class FlightsController {
     return this.flightsService.getAllFlights();
   }
 
+  @Get('get-flight-by-id/:id')
+  getFlightById(@Param('id') id: number) {
+    return this.flightsService.getFlightById(id);
+  }
+
   @ApiParam({
     name: 'departureTime',
     description: 'The departure time of the flight',

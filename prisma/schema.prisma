@@ -17,16 +17,17 @@ model airports {
 }
 
 model flights {
-  flight_id                                       Int       @id @default(autoincrement())
-  flight_number                                   String    @db.VarChar(20)
+  flight_id                                       Int                @id @default(autoincrement())
+  flight_number                                   String             @db.VarChar(20)
   departure_airport_id                            Int?
   arrival_airport_id                              Int?
-  departure_time                                  DateTime? @db.DateTime(0)
-  arrival_time                                    DateTime? @db.DateTime(0)
+  departure_time                                  DateTime?          @db.DateTime(0)
+  arrival_time                                    DateTime?          @db.DateTime(0)
   price                                           Int
-  created_at                                      DateTime? @db.DateTime(0)
-  airports_flights_departure_airport_idToairports airports? @relation("flights_departure_airport_idToairports", fields: [departure_airport_id], references: [airport_id], onDelete: NoAction, onUpdate: NoAction, map: "flights_ibfk_1")
-  airports_flights_arrival_airport_idToairports   airports? @relation("flights_arrival_airport_idToairports", fields: [arrival_airport_id], references: [airport_id], onDelete: NoAction, onUpdate: NoAction, map: "flights_ibfk_2")
+  created_at                                      DateTime?          @db.DateTime(0)
+  airports_flights_departure_airport_idToairports airports?          @relation("flights_departure_airport_idToairports", fields: [departure_airport_id], references: [airport_id], onDelete: NoAction, onUpdate: NoAction, map: "flights_ibfk_1")
+  airports_flights_arrival_airport_idToairports   airports?          @relation("flights_arrival_airport_idToairports", fields: [arrival_airport_id], references: [airport_id], onDelete: NoAction, onUpdate: NoAction, map: "flights_ibfk_2")
+  revenueByFlights                                revenueByFlights[]
   tickets                                         tickets[]
 
   @@index([arrival_airport_id], map: "arrival_airport_id")
@@ -34,34 +35,108 @@ model flights {
 }
 
 model tickets {
-  ticket_id     Int       @id @default(autoincrement())
-  ticket_number String    @unique(map: "ticket_number") @db.VarChar(20)
+  ticket_id     Int          @id @default(autoincrement())
+  ticket_number String       @unique(map: "ticket_number") @db.VarChar(20)
   flight_id     Int?
   user_id       Int?
-  ticket_class  String?   @db.VarChar(100)
-  price         Int
-  status        String    @default("booked") @db.VarChar(20)
+  ticket_class  String?      @db.VarChar(100)
+  status        String       @default("booked") @db.VarChar(20)
   passenger     Int?
-  created_at    DateTime? @db.DateTime(0)
-  flights       flights?  @relation(fields: [flight_id], references: [flight_id], onDelete: NoAction, onUpdate: NoAction, map: "tickets_ibfk_1")
-  users         users?    @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "tickets_ibfk_2")
+  total_price   Int?
+  created_at    DateTime?    @db.DateTime(0)
+  passengers    passengers[]
+  flights       flights?     @relation(fields: [flight_id], references: [flight_id], onDelete: NoAction, onUpdate: NoAction, map: "tickets_ibfk_1")
+  users         users?       @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "tickets_ibfk_2")
 
   @@index([flight_id], map: "flight_id")
   @@index([user_id], map: "user_id")
 }
 
 model users {
-  user_id       Int       @id @default(autoincrement())
-  full_name     String    @db.VarChar(100)
-  email         String    @unique(map: "email") @db.VarChar(100)
-  password      String    @db.VarChar(255)
-  gender        Int?      @db.TinyInt
-  date_of_birth DateTime? @db.Date
-  nationality   String?   @db.VarChar(100)
-  cccd          String?   @db.VarChar(20)
-  address       String?   @db.Text
-  phone         String?   @db.VarChar(20)
-  role          String    @db.VarChar(50)
-  refresh_token String?   @db.Text
-  tickets       tickets[]
+  user_id                                    Int            @id @default(autoincrement())
+  full_name                                  String         @db.VarChar(100)
+  email                                      String         @unique(map: "email") @db.VarChar(100)
+  password                                   String         @db.VarChar(255)
+  gender                                     Int?           @db.TinyInt
+  date_of_birth                              DateTime?      @db.Date
+  nationality                                String?        @db.VarChar(100)
+  cccd                                       String?        @db.VarChar(20)
+  address                                    String?        @db.Text
+  phone                                      String?        @db.VarChar(20)
+  role                                       String         @db.VarChar(50)
+  refresh_token                              String?        @db.Text
+  chat                                       chat[]
+  payment                                    payment[]
+  tickets                                    tickets[]
+  user_friends_user_friends_user_idTousers   user_friends[] @relation("user_friends_user_idTousers")
+  user_friends_user_friends_friend_idTousers user_friends[] @relation("user_friends_friend_idTousers")
+}
+
+model passengers {
+  passenger_id    Int      @id @default(autoincrement())
+  ticket_id       Int
+  passenger_name  String   @db.VarChar(100)
+  gender          Int      @db.TinyInt
+  date_of_birth   DateTime @db.Date
+  passport_number String   @db.VarChar(50)
+  type            String   @db.VarChar(10)
+  tickets         tickets  @relation(fields: [ticket_id], references: [ticket_id], onDelete: NoAction, onUpdate: NoAction, map: "passengers_ibfk_1")
+
+  @@index([ticket_id], map: "ticket_id")
+}
+
+model revenueByFlights {
+  rbf_id        Int             @id @default(autoincrement())
+  flight_id     Int?
+  total_tickets Int?
+  revenue       Int?
+  ratio         Int?
+  flights       flights?        @relation(fields: [flight_id], references: [flight_id], onDelete: NoAction, onUpdate: NoAction, map: "revenueByFlights_ibfk_1")
+  revenueByYear revenueByYear[]
+
+  @@index([flight_id], map: "flight_id")
+}
+
+model revenueByYear {
+  rby_id           Int               @id @default(autoincrement())
+  rbf_id           Int?
+  total_flights    Int?
+  revenue          Int?
+  ratio            Int?
+  revenueByFlights revenueByFlights? @relation(fields: [rbf_id], references: [rbf_id], onDelete: NoAction, onUpdate: NoAction, map: "revenueByYear_ibfk_1")
+
+  @@index([rbf_id], map: "rbf_id")
+}
+
+model chat {
+  id      Int       @id @unique(map: "id") @default(autoincrement())
+  user_id Int?
+  content String?   @db.VarChar(255)
+  room_id String?   @db.VarChar(255)
+  date    DateTime? @db.DateTime(0)
+  users   users?    @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "chat_ibfk_1")
+
+  @@index([user_id], map: "user_id")
+}
+
+model payment {
+  payment_id   Int     @id @unique(map: "id") @default(autoincrement())
+  user_id      Int?
+  name_on_card String? @db.VarChar(255)
+  card_number  String? @db.VarChar(255)
+  expiry_date  String? @db.VarChar(255)
+  cvv          Int?
+  users        users?  @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "payment_ibfk_1")
+
+  @@index([user_id], map: "user_id")
+}
+
+model user_friends {
+  user_id                             Int
+  friend_id                           Int
+  users_user_friends_user_idTousers   users @relation("user_friends_user_idTousers", fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "user_friends_ibfk_1")
+  users_user_friends_friend_idTousers users @relation("user_friends_friend_idTousers", fields: [friend_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "user_friends_ibfk_2")
+
+  @@id([user_id, friend_id])
+  @@index([friend_id], map: "friend_id")
 }
