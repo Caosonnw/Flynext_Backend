@@ -15,8 +15,8 @@ export class FriendsController {
     return this.friendsService.addFriend(userId, friendId);
   }
 
-  @Get('get-friends-by-userId/:userId')
-  getFriendsByUserId(@Param('userId') userId: number) {
-    return this.friendsService.getFriendsByUserId(userId);
+  @Get('get-friends-by-userId/:user_id')
+  getFriendsByUserId(@Param('user_id') user_id: number) {
+    return this.friendsService.getFriendsByUserId(user_id);
   }
 }

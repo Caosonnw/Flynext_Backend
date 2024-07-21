@@ -25,14 +25,13 @@ export class FriendsService {
     }
   }
 
-  async getFriendsByUserId(userId) {
+  async getFriendsByUserId(user_id) {
     try {
       const data = await this.prisma.user_friends.findMany({
         where: {
-          user_id: parseInt(userId),
+          user_id: parseInt(user_id),
         },
         include: {
-          users_user_friends_user_idTousers: true,
           users_user_friends_friend_idTousers: true,
         },
       });

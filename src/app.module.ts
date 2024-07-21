@@ -11,6 +11,7 @@ import { TicketModule } from './ticket/ticket.module';
 import { UsersModule } from './users/users.module';
 import { ChatGateway } from './gateway/chat.gateway';
 import { FriendsModule } from './friends/friends.module';
+import { RevenueModule } from './revenue/revenue.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { FriendsModule } from './friends/friends.module';
     TicketModule,
     PassengersModule,
     FriendsModule,
+    RevenueModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy, ChatGateway],

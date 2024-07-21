@@ -40,6 +40,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       where: {
         room_id: roomId,
       },
+      include: {
+        users: true,
+      },
     });
 
     this.server.to(roomId).emit('load-chat', chatHistory);
