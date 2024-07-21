@@ -1,3 +1,13 @@
+-- -------------------------------------------------------------
+-- TablePlus 6.0.8(562)
+--
+-- https://tableplus.com/
+--
+-- Database: db_flynext
+-- Generation Time: 2024-07-21 18:05:15.2150
+-- -------------------------------------------------------------
+
+
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -6,6 +16,7 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
 
 CREATE TABLE `airports` (
   `airport_id` int NOT NULL AUTO_INCREMENT,
@@ -26,7 +37,7 @@ CREATE TABLE `chat` (
   UNIQUE KEY `id` (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `chat_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `flights` (
   `flight_id` int NOT NULL AUTO_INCREMENT,
@@ -42,7 +53,7 @@ CREATE TABLE `flights` (
   KEY `arrival_airport_id` (`arrival_airport_id`),
   CONSTRAINT `flights_ibfk_1` FOREIGN KEY (`departure_airport_id`) REFERENCES `airports` (`airport_id`),
   CONSTRAINT `flights_ibfk_2` FOREIGN KEY (`arrival_airport_id`) REFERENCES `airports` (`airport_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `passengers` (
   `passenger_id` int NOT NULL AUTO_INCREMENT,
@@ -55,7 +66,7 @@ CREATE TABLE `passengers` (
   PRIMARY KEY (`passenger_id`),
   KEY `ticket_id` (`ticket_id`),
   CONSTRAINT `passengers_ibfk_1` FOREIGN KEY (`ticket_id`) REFERENCES `tickets` (`ticket_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `payment` (
   `payment_id` int NOT NULL AUTO_INCREMENT,
@@ -79,7 +90,7 @@ CREATE TABLE `revenueByFlights` (
   PRIMARY KEY (`rbf_id`),
   KEY `flight_id` (`flight_id`),
   CONSTRAINT `revenueByFlights_ibfk_1` FOREIGN KEY (`flight_id`) REFERENCES `flights` (`flight_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `revenueByYear` (
   `rby_id` int NOT NULL AUTO_INCREMENT,
@@ -90,7 +101,7 @@ CREATE TABLE `revenueByYear` (
   PRIMARY KEY (`rby_id`),
   KEY `rbf_id` (`rbf_id`),
   CONSTRAINT `revenueByYear_ibfk_1` FOREIGN KEY (`rbf_id`) REFERENCES `revenueByFlights` (`rbf_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2026 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `tickets` (
   `ticket_id` int NOT NULL AUTO_INCREMENT,
@@ -108,7 +119,7 @@ CREATE TABLE `tickets` (
   KEY `user_id` (`user_id`),
   CONSTRAINT `tickets_ibfk_1` FOREIGN KEY (`flight_id`) REFERENCES `flights` (`flight_id`),
   CONSTRAINT `tickets_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `user_friends` (
   `user_id` int NOT NULL,
@@ -137,12 +148,9 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO `airports` (`airport_id`, `airport_code`, `airport_name`, `city`) VALUES
-(1, 'SGN', 'Tan Son Nhat International Airport - Ho Chi Minh city - SGN', 'Ho Chi Minh');
-INSERT INTO `airports` (`airport_id`, `airport_code`, `airport_name`, `city`) VALUES
-(2, 'HAN', 'Noi Bai International Airport - Ha Noi city - HAN', 'Ha Noi');
-INSERT INTO `airports` (`airport_id`, `airport_code`, `airport_name`, `city`) VALUES
-(3, 'DAD', 'Da Nang International Airport - Da Nang city - DAD', 'Da Nang');
-INSERT INTO `airports` (`airport_id`, `airport_code`, `airport_name`, `city`) VALUES
+(1, 'SGN', 'Tan Son Nhat International Airport - Ho Chi Minh city - SGN', 'Ho Chi Minh'),
+(2, 'HAN', 'Noi Bai International Airport - Ha Noi city - HAN', 'Ha Noi'),
+(3, 'DAD', 'Da Nang International Airport - Da Nang city - DAD', 'Da Nang'),
 (4, 'HUI', 'Phu Bai International Airport - Hue city - HUI', 'Hue'),
 (5, 'CRX', 'Cam Ranh International Airport - Nha Trang city - CRX', 'Nha Trang'),
 (6, 'PQC', 'Phu Quoc International Airport - Phuc Quoc city - PQC', 'Phu Quoc'),
@@ -165,21 +173,47 @@ INSERT INTO `airports` (`airport_id`, `airport_code`, `airport_name`, `city`) VA
 (23, 'THD', 'Tho Xuan Airport - Thanh Hoa city - THD', 'Thanh Hoa');
 
 INSERT INTO `chat` (`id`, `user_id`, `content`, `room_id`, `date`) VALUES
-(1, 1, '2', NULL, '2024-07-16 14:18:31');
-INSERT INTO `chat` (`id`, `user_id`, `content`, `room_id`, `date`) VALUES
-(2, 1, '2', '1-1', '2024-07-16 14:43:01');
-INSERT INTO `chat` (`id`, `user_id`, `content`, `room_id`, `date`) VALUES
-(3, 1, '2', '1-1', '2024-07-16 15:11:19');
-INSERT INTO `chat` (`id`, `user_id`, `content`, `room_id`, `date`) VALUES
-(4, 2, '2', '1-2', '2024-07-16 15:13:23');
+(1, 1, '2', NULL, '2024-07-16 14:18:31'),
+(2, 1, '2', '1-1', '2024-07-16 14:43:01'),
+(3, 1, '2', '1-1', '2024-07-16 15:11:19'),
+(4, 2, '2', '1-2', '2024-07-16 15:13:23'),
+(5, 1, 'hehe', '1-2', '2024-07-18 04:14:24'),
+(6, 1, 'xin chào', '1-2', '2024-07-18 04:16:04'),
+(7, 1, '123', '1-2', '2024-07-18 04:19:10'),
+(8, 1, '312', '1-2', '2024-07-18 04:19:47'),
+(9, 1, 'Hello', '1-2', '2024-07-18 04:23:10'),
+(10, 2, 'Xin chào', '1-2', '2024-07-18 06:27:22'),
+(11, 2, 'Hello', '1-2', '2024-07-18 06:27:33'),
+(12, 1, 'May I help you', '1-2', '2024-07-18 06:34:29'),
+(13, 1, 'Hello', '1-2', '2024-07-19 15:29:05'),
+(14, 1, 'Xin chào', '1-2', '2024-07-19 15:31:30'),
+(15, 1, 'Tôi là admin', '1-2', '2024-07-19 15:32:12'),
+(16, 1, '123', '1-2', '2024-07-19 15:32:30'),
+(18, 1, 'Hello ', '1-1', '2024-07-19 15:34:12'),
+(19, 1, 'Bạn có thể giúp tôi được không ', '1-1', '2024-07-19 15:34:20'),
+(20, 1, '123', '1-2', '2024-07-19 15:34:48'),
+(21, 1, '123', '1-2', '2024-07-19 15:35:26'),
+(22, 1, '123', '1-2', '2024-07-19 15:38:18'),
+(23, 1, '3', '1-2', '2024-07-19 15:46:54'),
+(24, 1, 'test', '1-2', '2024-07-21 02:21:33'),
+(25, 1, 'haha', '1-2', '2024-07-21 02:31:45'),
+(26, 1, 'Hello', '1-2', '2024-07-21 02:33:02'),
+(27, 2, 'Xin chào', '1-2', '2024-07-21 02:33:49'),
+(28, 2, 'Bạn có thể hỗ trợ tôi được không ', '1-2', '2024-07-21 02:33:57'),
+(29, 1, 'Tôi có thể giúp gì cho bạn', '1-2', '2024-07-21 02:34:26'),
+(30, 2, 'Tôi gặp khó khăn trong việc đặt vé', '1-2', '2024-07-21 02:35:14'),
+(31, 1, 'Bạn gặp vấn đề ở chỗ nào', '1-2', '2024-07-21 02:35:24'),
+(32, 2, 'Phần thanh toán', '1-2', '2024-07-21 02:37:30'),
+(33, 1, 'Okok', '1-2', '2024-07-21 02:37:39'),
+(34, 1, 'hi nè', '1-2', '2024-07-21 02:39:16'),
+(35, 1, 'hello nè', '1-2', '2024-07-21 02:39:23'),
+(36, 1, 'kkk', '1-2', '2024-07-21 02:39:35'),
+(37, 1, '123', '1-2', '2024-07-21 02:39:44');
 
 INSERT INTO `flights` (`flight_id`, `flight_number`, `departure_airport_id`, `arrival_airport_id`, `departure_time`, `arrival_time`, `price`, `created_at`) VALUES
-(1, 'VN-upK8J5', 1, 2, '2024-05-31 09:00:00', '2024-05-31 12:20:00', 3000000, '2024-05-30 14:59:44');
-INSERT INTO `flights` (`flight_id`, `flight_number`, `departure_airport_id`, `arrival_airport_id`, `departure_time`, `arrival_time`, `price`, `created_at`) VALUES
-(2, 'VN-7BLfor', 1, 2, '2024-05-31 09:00:00', '2024-05-31 12:20:00', 3000000, '2024-05-30 14:59:44');
-INSERT INTO `flights` (`flight_id`, `flight_number`, `departure_airport_id`, `arrival_airport_id`, `departure_time`, `arrival_time`, `price`, `created_at`) VALUES
-(3, 'VN-z7wbjq', 1, 2, '2024-05-31 15:00:00', '2024-05-31 17:50:00', 6000000, '2024-05-30 15:50:08');
-INSERT INTO `flights` (`flight_id`, `flight_number`, `departure_airport_id`, `arrival_airport_id`, `departure_time`, `arrival_time`, `price`, `created_at`) VALUES
+(1, 'VN-upK8J5', 1, 2, '2024-05-31 09:00:00', '2024-05-31 12:20:00', 3000000, '2024-05-30 14:59:44'),
+(2, 'VN-7BLfor', 1, 2, '2024-05-31 09:00:00', '2024-05-31 12:20:00', 3000000, '2024-05-30 14:59:44'),
+(3, 'VN-z7wbjq', 1, 2, '2024-05-31 15:00:00', '2024-05-31 17:50:00', 6000000, '2024-05-30 15:50:08'),
 (4, 'VN-9251', 1, 2, '2024-06-01 09:00:00', '2024-06-01 12:00:00', 2955000, '2024-06-01 07:50:18'),
 (5, 'VJ-2980', 1, 2, '2024-06-01 07:30:00', '2024-06-01 09:00:00', 1250000, '2024-06-01 08:26:32'),
 (6, 'QH-5937', 1, 2, '2024-06-01 15:00:00', '2024-06-01 17:20:00', 3330000, '2024-06-01 09:24:29'),
@@ -229,34 +263,63 @@ INSERT INTO `flights` (`flight_id`, `flight_number`, `departure_airport_id`, `ar
 (50, 'VN-2858', 2, 1, '2024-07-09 12:30:00', '2024-07-09 14:40:00', 2134000, '2024-07-05 06:40:37'),
 (51, 'VJ-3583', 2, 1, '2024-07-09 07:00:00', '2024-07-09 09:10:00', 1803800, '2024-07-05 06:42:26'),
 (52, 'BL-5323', 2, 1, '2024-07-09 09:10:00', '2024-07-09 11:20:00', 1877600, '2024-07-05 06:43:11'),
-(53, 'VN-7721', 1, 2, '2024-07-16 07:00:00', '2024-07-16 09:25:00', 1450000, '2024-07-11 14:56:53'),
-(54, 'VN-4492', 1, 2, '2024-07-23 07:00:00', '2024-07-23 09:20:00', 1450000, '2024-07-17 06:05:50');
+(53, 'VN-7721', 1, 2, '2024-07-16 07:00:00', '2024-07-16 09:25:00', 1929000, '2024-07-11 14:56:53'),
+(54, 'VN-4492', 1, 2, '2024-07-23 07:00:00', '2024-07-23 09:20:00', 2134000, '2024-07-17 06:05:50'),
+(55, 'VJ-4595', 1, 2, '2024-07-26 21:15:00', '2024-07-26 23:30:00', 1544000, '2024-07-21 05:19:35'),
+(56, 'VN-9845', 1, 2, '2024-07-26 05:45:00', '2024-07-26 07:50:00', 1726000, '2024-07-21 05:20:28'),
+(57, 'VN-4158', 1, 2, '2024-07-26 11:00:00', '2024-07-26 13:10:00', 1931000, '2024-07-21 05:21:48'),
+(58, 'QH-8403', 1, 2, '2024-07-26 21:10:00', '2024-07-26 23:20:00', 1739000, '2024-07-21 05:22:32'),
+(59, 'VJ-1245', 2, 1, '2024-07-26 04:50:00', '2024-07-26 07:00:00', 1674000, '2024-07-21 05:23:17'),
+(60, 'VU-5962', 2, 1, '2024-07-26 05:45:00', '2024-07-26 07:50:00', 1726000, '2024-07-21 05:24:40'),
+(61, 'BL-9702', 2, 1, '2024-07-26 18:50:00', '2024-07-26 21:10:00', 1726000, '2024-07-21 05:25:24'),
+(62, 'QH-3192', 1, 2, '2024-07-26 15:15:00', '2024-07-26 17:25:00', 3057000, '2024-07-21 05:26:41'),
+(63, 'VN-6085', 2, 1, '2024-07-26 20:00:00', '2024-07-26 22:15:00', 2134000, '2024-07-21 05:27:29'),
+(64, 'VN-2731', 2, 1, '2024-07-26 17:30:00', '2024-07-26 19:45:00', 2134000, '2024-07-21 05:28:27');
 
 INSERT INTO `passengers` (`passenger_id`, `ticket_id`, `passenger_name`, `gender`, `date_of_birth`, `passport_number`, `type`) VALUES
-(19, 51, 'Mai Vũ Cao Sơn', 1, '2004-04-15', '068204008774', 'adult');
-INSERT INTO `passengers` (`passenger_id`, `ticket_id`, `passenger_name`, `gender`, `date_of_birth`, `passport_number`, `type`) VALUES
-(20, 51, 'Admin', 1, '2013-05-31', '', 'children');
-INSERT INTO `passengers` (`passenger_id`, `ticket_id`, `passenger_name`, `gender`, `date_of_birth`, `passport_number`, `type`) VALUES
-(21, 52, 'Sơn', 1, '2004-04-15', 'VN123', 'adult');
+(19, 51, 'Mai Vũ Cao Sơn', 1, '2004-04-15', '068204008774', 'adult'),
+(20, 51, 'Admin', 1, '2013-05-31', '', 'children'),
+(21, 52, 'Sơn', 1, '2004-04-15', 'VN123', 'adult'),
+(22, 53, 'Cao Sơn', 1, '2004-04-15', 'VN-123312', 'adult'),
+(23, 57, 'Test', 1, '2024-07-08', '1231123', 'adult');
 
+INSERT INTO `revenueByFlights` (`rbf_id`, `flight_id`, `total_tickets`, `revenue`, `ratio`) VALUES
+(5, 51, 0, 0, 0),
+(6, 51, 0, 0, 0),
+(7, 46, 1, 4257330, 0),
+(8, 1, 0, 0, 0),
+(9, 1, 0, 0, 0),
+(10, 46, 1, 4257330, 0),
+(11, 1, 0, 0, 0),
+(12, 2, 0, 0, 0),
+(13, 3, 0, 0, 0),
+(14, 45, 0, 0, 0),
+(15, 46, 1, 4257330, 0),
+(16, 1, 0, 0, 0),
+(17, 46, 1, 4257330, 0),
+(18, 1, 0, 0, 0),
+(19, 1, 0, 0, 0),
+(20, 46, 1, 4257330, 0),
+(21, 46, 1, 4257330, 0),
+(22, 1, 0, 0, 0);
 
-
-
-
-
+INSERT INTO `revenueByYear` (`rby_id`, `rbf_id`, `total_flights`, `revenue`, `ratio`) VALUES
+(2023, NULL, 0, 0, 0),
+(2024, NULL, 54, 8666430, 0),
+(2025, NULL, 0, 0, 0);
 
 INSERT INTO `tickets` (`ticket_id`, `ticket_number`, `flight_id`, `user_id`, `ticket_class`, `status`, `passenger`, `total_price`, `created_at`) VALUES
-(51, 'TK7930', 46, 1, 'Business Class', 'booked', 2, 4257330, '2024-07-07 15:46:41');
-INSERT INTO `tickets` (`ticket_id`, `ticket_number`, `flight_id`, `user_id`, `ticket_class`, `status`, `passenger`, `total_price`, `created_at`) VALUES
-(52, 'TK3147', 42, 1, 'Economy Class', 'booked', 1, 1436600, '2024-07-09 07:18:58');
+(51, 'TK7930', 46, 1, 'Business Class', 'booked', 2, 4257330, '2024-07-07 15:46:41'),
+(52, 'TK3147', 42, 1, 'Economy Class', 'booked', 1, 1436600, '2024-07-09 07:18:58'),
+(53, 'TK3048', 54, 1, 'Business Class', 'booked', 1, 1522500, '2024-07-18 06:04:11'),
+(57, 'TK6485', 54, 1, 'Economy Class', 'booked', 1, 1450000, '2024-07-18 06:19:45');
 
-
-
+INSERT INTO `user_friends` (`user_id`, `friend_id`) VALUES
+(1, 2);
 
 INSERT INTO `users` (`user_id`, `full_name`, `email`, `password`, `gender`, `date_of_birth`, `nationality`, `cccd`, `address`, `phone`, `role`, `refresh_token`) VALUES
-(1, 'MAI VU CAO SON', 'admin@gmail.com', '$2b$10$dbZGaJO0Y9sbPmrkosZSDelGujUpFrGO4HoCA22UqsF/S2zo2BbNW', 1, '2004-04-15', 'VIETNAM', '068204008774', '59/33B, Pham Viet Chanh, District 1, Ho Chi Minh city', '0336114129', 'ADMIN', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJrZXkiOiI5dGt0MjIiLCJpYXQiOjE3MjExMzk4ODIsImV4cCI6MTcyMTc0NDY4Mn0.0xYofAUWFa0wcm5SDNTarjNRPVsF6z0ZG4rdRk3_ALc');
-INSERT INTO `users` (`user_id`, `full_name`, `email`, `password`, `gender`, `date_of_birth`, `nationality`, `cccd`, `address`, `phone`, `role`, `refresh_token`) VALUES
-(2, 'Test', 'test@gmail.com', '$2b$10$L3tmG68ZGSzBthOakOCTKOFw83OPM2v1KqzsVdZXzgmjaK0YJMhfG', 1, '2000-05-10', 'Viet Nam', '123', '123, 1A, LA', '0336114129', 'USER', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJrZXkiOiJFVHQyT1UiLCJpYXQiOjE3MjExNDI3OTgsImV4cCI6MTcyMTc0NzU5OH0.WAJAE5BuJ9vV75VetAduL3XHB8qYCEKn467OSh_eTsI');
+(1, 'MAI VU CAO SON', 'admin@gmail.com', '$2b$10$dbZGaJO0Y9sbPmrkosZSDelGujUpFrGO4HoCA22UqsF/S2zo2BbNW', 1, '2004-04-15', 'VIETNAM', '068204008774', '59/33B, Pham Viet Chanh, District 1, Ho Chi Minh city', '0336114129', 'ADMIN', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJrZXkiOiJoYUM1aU8iLCJpYXQiOjE3MjEyODM3ODUsImV4cCI6MTcyMTg4ODU4NX0.H4ZEI1aiDWMqxXWS6-PZA8KxHJoZ4W3fSx2J8PfPKYs'),
+(2, 'Test', 'test@gmail.com', '$2b$10$L3tmG68ZGSzBthOakOCTKOFw83OPM2v1KqzsVdZXzgmjaK0YJMhfG', 1, '2000-05-10', 'Viet Nam', '123', '123, 1A, LA', '0336114129', 'USER', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJrZXkiOiJJQ2ZDVU0iLCJpYXQiOjE3MjE1MjkyMDcsImV4cCI6MTcyMjEzNDAwN30.Fc_5v1lrl2B9M9kzAAnr-xXCFuZq-2519bYNr2bYywk');
 
 
 

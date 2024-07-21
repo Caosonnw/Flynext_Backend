@@ -1,41 +1,22 @@
-# Stage 1: Build the project
-FROM node:20 AS build
-
-WORKDIR /usr/src/app
-
-# Copy package.json and yarn.lock to install dependencies
-COPY package*.json yarn.lock ./
-
-# Install dependencies
-RUN yarn install
-
-# Copy Prisma schema and generate client
-COPY prisma ./prisma
-RUN yarn prisma generate
-
-# Copy the rest of the project files
-COPY . .
-
-# Build the project
-RUN yarn run build
-
-# Stage 2: Create the final image
 FROM node:20
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Copy only the built files from the build stage
-COPY --from=build /usr/src/app/dist ./dist
-COPY --from=build /usr/src/app/node_modules ./node_modules
-COPY --from=build /usr/src/app/package*.json . 
-COPY --from=build /usr/src/app/prisma ./prisma
+COPY package*.json ./
+COPY prisma ./prisma/
 
-# Expose the ports the app runs on
+RUN yarn config set network-timeout 3000000
+
+RUN yarn install
+
+COPY . .
+
+RUN yarn run build
+
 EXPOSE 8080
 EXPOSE 8081
 
-# Run the application
-CMD ["node", "dist/main"]
+CMD [ "yarn", "run", "start:prod" ]
 
 # docker build . -t img-flynext-be
 
