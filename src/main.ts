@@ -17,10 +17,5 @@ async function bootstrap() {
   SwaggerModule.setup('/swagger', app, document);
 
   await app.listen(8080);
-
-
-  const app2 = await NestFactory.create(AppModule);
-  app2.useWebSocketAdapter(new IoAdapter(app2));
-  await app2.listen(8081);
 }
 bootstrap();
