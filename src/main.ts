@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as express from 'express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,5 +17,10 @@ async function bootstrap() {
   SwaggerModule.setup('/swagger', app, document);
 
   await app.listen(8080);
+
+
+  const app2 = await NestFactory.create(AppModule);
+  app2.useWebSocketAdapter(new IoAdapter(app2));
+  await app2.listen(8081);
 }
 bootstrap();
